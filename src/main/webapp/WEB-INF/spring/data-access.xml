@@ -1,0 +1,53 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    
+	<context:component-scan base-package="com.rh.invoice.domain"/>	
+<!-- 	<context:component-scan base-package="com.rh.invoice.domain,com.rh.invoice.repository"/> -->
+	<context:annotation-config/>
+ 
+	<bean id="entityManagerFactory"
+			class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan">
+			<array> 
+				<value>com.rh.invoice.domain</value>
+				<value>com.rh.invoice.repository</value>
+				<value>com.rh.invoicelog</value>
+			</array>
+		</property>
+		<property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
+		<property name="jpaProperties">
+         	<props>
+            		<prop key="hibernate.show_sql">true</prop>
+            		<!-- <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialectt</prop> -->
+            		<prop key="hibernate.default_schema">APPS</prop>
+         	</props>
+      </property>
+	</bean>
+ 
+	<bean id="jpaVendorAdapter"
+			class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="database" value="ORACLE" />
+	</bean>
+	
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@//rhi006.coresys.com:47201/RHIB" />
+		<property name="username" value="apps" />
+		<property name="password" value="j0sies03" />
+	</bean> 
+	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+ 	<bean id="errorLogRepositoryImpl" class="com.rh.invoice.repository.ErrorLogRepositoryImpl"></bean>
+	<tx:annotation-driven />
+  
+</beans>

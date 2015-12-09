@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+ 
+    <context:component-scan base-package="com.rh.invoicelog" />   
+     
+    <!-- SET default mail properties -->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.gmail.com"/>
+        <property name="port" value="25"/>
+        <property name="username" value="test4jmail@gmail.com"/>
+        <property name="password" value="ZXcv1234"/>
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.transport.protocol">smtp</prop>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.debug">true</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <bean id="errorLogFile" class="com.rh.invoicelog.ErrorLogFile">
+    		<constructor-arg value="test4jms.csv"/>
+    	</bean>
+    	<bean id="invoiceBadFile" class="com.rh.invoicelog.InvoiceBadFile">
+    		<constructor-arg value="test4jms.csv"/>
+    		<!-- <constructor-arg value="badfiletest.bad"/> -->
+    	</bean>
+    <bean id="csvReport" class="com.rh.invoicelog.CsvReport">
+    		<constructor-arg index="0" ref="errorLogFile"/>
+    		<constructor-arg index="1" ref="invoiceBadFile"/>
+    	</bean>
+	<bean id="reportMail" class="com.rh.invoicelog.ReportMail">
+		<constructor-arg ref="csvReport" />
+		<property name="mailSender" ref="mailSender" />
+		<property name="simpleMailMessage" ref="preConfiguredMessage" />
+	</bean>     
+    <!--  pre-configured messagess also which are ready to send -->
+    <bean id="preConfiguredMessage" class="org.springframework.mail.SimpleMailMessage">
+        <property name="to">
+        		<set>
+        			<value>bluo@rh.com</value>
+        			<value>nbidhurakanthu@rh.com</value>
+        		</set> 
+        	</property>
+        <property name="from" value="test4jmail@gmail.com"></property>
+        <property name="subject" value="Test email for Vendor Upload"/>
+        <property name="text">
+			<value>
+				<![CDATA[
+Dear %s,
+Mail Content : %s
+				]]>
+			</value>
+	   </property>
+    </bean>
+    
+</beans>
