@@ -5,5 +5,5 @@ import java.util.List;
 import com.rh.invoice.domain.ErrorLog;
 
 public interface ReportStrategy {
-	public void createReport(List<ErrorLog> errorLogs);
+	public void createReport(List<ErrorLog> errorLogs) throws Exception;
 }

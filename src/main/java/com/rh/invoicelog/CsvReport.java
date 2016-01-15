@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 //import java.util.logging.Logger;
 import java.util.List;
+
 import com.rh.invoice.domain.ErrorLog;
 /**
  * @author bluo
- *
+ * 
  */
 
 public class CsvReport implements ReportStrategy{
@@ -39,31 +40,33 @@ public class CsvReport implements ReportStrategy{
 	private void setErrorEntries(List<ErrorLog> recErrorLogs) {
 		this.errorLogs = recErrorLogs;
 	}
-	
+	/**
+	 * @param List<ErrorLog> the list of error records read from database based on seach
+	 *                       criteria
+	 */
 	@Override
-	public void createReport(List<ErrorLog> recErrorLogs) {
+	public void createReport(List<ErrorLog> recErrorLogs) throws IOException {
 		//create buffered writer for header and lines
 		setErrorEntries(recErrorLogs);
+		BufferedWriter bWriter = null;
 		try {
-			BufferedWriter bWriter = new BufferedWriter(
+			bWriter = new BufferedWriter(
 								new FileWriter( this.errorLogFile.getReportFile()));
 			addHeader(bWriter);
 			addLines(bWriter);
 			if (badFile.getReportFile().exists()) {
 				addBadFile(bWriter);
 			}
-			bWriter.flush();
-			bWriter.close();
-			
+			bWriter.flush();		
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally{
+			bWriter.close();
 		}
 	}
 	
 	public void addHeader(BufferedWriter bWriter) throws IOException {
 		StringBuffer headerLine = new StringBuffer();
-//		headerLine.append("Process Name");
-//		headerLine.append(csvSeparator);
 		headerLine.append("Invoice Number");
 		headerLine.append(csvSeparator);
 		headerLine.append("Error Column");

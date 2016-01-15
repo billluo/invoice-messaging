@@ -6,10 +6,12 @@ import java.util.logging.Logger;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+
 import com.rh.invoice.domain.ErrorLog;
 
 public class ReportMail {
@@ -33,7 +35,7 @@ public class ReportMail {
 		this.mailSender = mailSender;
 	}
 	
-	public void sendMailAndAttachements(List<ErrorLog> recErrorLogs) {
+	public void sendMailAndAttachements(List<ErrorLog> recErrorLogs) throws Exception {
 		//create csv file as attachment
 		csvReport.createReport(recErrorLogs);
 		//send mail
@@ -42,25 +44,26 @@ public class ReportMail {
 	}
 	
 	public void sendMail(String dear, String content) {
-	
-	   MimeMessage message = mailSender.createMimeMessage();
 		
-	   try{
-		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+		MimeMessage message = mailSender.createMimeMessage();
+		
+		try{
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
 			
-		helper.setFrom(simpleMailMessage.getFrom());
-		helper.setTo(simpleMailMessage.getTo());
-		helper.setSubject(simpleMailMessage.getSubject());
-		helper.setText(String.format(
+			helper.setFrom(simpleMailMessage.getFrom());
+			helper.setTo(simpleMailMessage.getTo());
+			helper.setSubject(simpleMailMessage.getSubject());
+			helper.setText(String.format(
 			simpleMailMessage.getText(), dear, content));
 		
-		//set a name for attachment
-		File file = csvReport.getErrorLogFile().getReportFile();
-		logger.info(file.getName());		
-		helper.addAttachment(file.getName(), file);
+			//set a name for attachment
+			File file = csvReport.getErrorLogFile().getReportFile();
+			logger.info(file.getName());		
+			helper.addAttachment(file.getName(), file);
 	    }catch (MessagingException e) {
-		throw new MailParseException(e);
+	    		throw new MailParseException(e);
 	    }
-	    mailSender.send(message);
-        }
+		
+	    	mailSender.send(message);	    	
+	}
 }

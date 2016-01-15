@@ -11,6 +11,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 // use a new Table(name="xxrh_invoice_error",schema="APPS")
+//object needs to be serialized to be sent as object in JMS
+//or  transform the object(instances) in a JSON
 @Entity
 @Table(name="xxrh_batchexecution_dtl",schema="APPS")
 public class ErrorLog implements Serializable {

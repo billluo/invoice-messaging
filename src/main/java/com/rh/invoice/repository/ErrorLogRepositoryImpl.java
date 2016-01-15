@@ -1,12 +1,11 @@
 package com.rh.invoice.repository;
 
-import javax.persistence.Query;
-
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +15,7 @@ import com.rh.invoicelog.ErrorLogCriteria;
 
 @Repository
 public class ErrorLogRepositoryImpl implements ErrorLogRepository {
-//	@PersistenceUnit(invoicePersistenceUnit)
+//	@PersistenceUnit(invoicePersistenceUnit)--test environment
 	@PersistenceContext
     private EntityManager em;
 	private ErrorLogCriteria invCriteria;
@@ -27,22 +26,20 @@ public class ErrorLogRepositoryImpl implements ErrorLogRepository {
 		return em.find(ErrorLog.class, recordId);	
 	}
 	//for test
-	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<ErrorLog> findByInvoiceNumber(String invoiceNbr){	
-		Query query = this.em.createQuery("SELECT e From ErrorLog  e WHERE "
-				+ "e.invoiceNumber = :invoiceNumber");
+		TypedQuery<ErrorLog> query = this.em.createQuery("SELECT e From ErrorLog  e WHERE "
+				+ "e.invoiceNumber = :invoiceNumber",ErrorLog.class);
 		query.setParameter("invoiceNumber",invoiceNbr);
 	
 		return (ArrayList<ErrorLog>) query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<ErrorLog> findByCriteria(ErrorLogCriteria criteria){
 		this.invCriteria =criteria;
-		Query query = this.em.createQuery("SELECT e From ErrorLog  e "
-				+ "WHERE TO_CHAR(e.errorDate,'DD-Mon-YYYY') = :errorDate ");
+		TypedQuery<ErrorLog> query = this.em.createQuery("SELECT e From ErrorLog  e "
+				+ "WHERE TO_CHAR(e.errorDate,'DD-Mon-YYYY') = :errorDate ",ErrorLog.class);
 		query.setParameter("errorDate",this.invCriteria.getCriteria());
 		
 		logger1.info(this.invCriteria.getCriteria());

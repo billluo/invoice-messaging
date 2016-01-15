@@ -3,12 +3,15 @@ package com.rh.invoicelog;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import com.rh.invoice.domain.ErrorLog;
 
 /**
@@ -43,6 +46,9 @@ public class MessageReceiver implements MessageListener {
 				reportMail.sendMailAndAttachements(recErrorLogs);
 			} catch (JMSException e) {			
 				e.printStackTrace();		
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} 
 		}
 	}

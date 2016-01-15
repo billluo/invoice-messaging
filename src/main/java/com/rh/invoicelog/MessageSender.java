@@ -49,6 +49,9 @@ public class MessageSender {
    	        }
         });
     }
+    /**
+     * use this method to send out Object message
+     */
     public void sendErrorMessage() {
     		jmsTemplate.send(destination,new MessageCreator() {
     		//use object to pass data, receiver will get object list and convert to report format
