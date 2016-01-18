@@ -49,7 +49,8 @@ public class ValidationScheduler {
 	        template.receive(destination);
 	        logger.info( " receive is done");
 
-			timer.cancel();			
+			timer.cancel();		
+			System.exit(0);
 		}
 	}
 	

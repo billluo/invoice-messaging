@@ -15,11 +15,31 @@ import com.rh.invoicelog.ErrorLogCriteria;
 
 @Repository
 public class ErrorLogRepositoryImpl implements ErrorLogRepository {
-//	@PersistenceUnit(invoicePersistenceUnit)--test environment
-	@PersistenceContext
+
     private EntityManager em;
 	private ErrorLogCriteria invCriteria;
+	/**
+	 * @return the EntityManager bean
+	 */
+	public EntityManager getEm() {
+		return em;
+	}
+	/**
+	 * @return the invCriteria for search
+	 */
+	public ErrorLogCriteria getInvCriteria() {
+		return invCriteria;
+	}
+//	@PersistenceUnit(invoicePersistenceUnit)--test environment	
+	@PersistenceContext
+	public void setEntityManager(EntityManager em) {
+		this.em = em;
+	}
 	
+	public void setInvCriteria(ErrorLogCriteria invCriteria) {
+		this.invCriteria = invCriteria;
+	}
+
 	static Logger logger1 = Logger.getLogger(ErrorLogRepositoryImpl.class.getName());
 	//for test
 	public ErrorLog findById(int recordId) {
@@ -37,7 +57,7 @@ public class ErrorLogRepositoryImpl implements ErrorLogRepository {
 
 	@Override
 	public ArrayList<ErrorLog> findByCriteria(ErrorLogCriteria criteria){
-		this.invCriteria =criteria;
+		setInvCriteria(criteria);;
 		TypedQuery<ErrorLog> query = this.em.createQuery("SELECT e From ErrorLog  e "
 				+ "WHERE TO_CHAR(e.errorDate,'DD-Mon-YYYY') = :errorDate ",ErrorLog.class);
 		query.setParameter("errorDate",this.invCriteria.getCriteria());
